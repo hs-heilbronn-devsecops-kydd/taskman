@@ -6,3 +6,4 @@ def test_remove_duplicates():
 def remove_duplicates(lst):
     return list(set(lst))
     
+
