@@ -5,3 +5,4 @@ pylint
 pytest
 fastapi
 pydantic
+pytest-xdist
