@@ -5,3 +5,5 @@ pylint
 pytest
 fastapi
 pydantic
+pytest-cov
+
