@@ -1,5 +1,12 @@
 FROM python:3.9-slim
 
+RUN adduser taskman
+USER taskman
+
+RUN pip install --upgrade pip
+ENV PATH="/home/taskman/.local/bin:${PATH}"
+
+
 WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
