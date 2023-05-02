@@ -2,9 +2,11 @@ name: Check with linter on PR
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, closed]
 
 jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,9 +28,18 @@ jobs:
       - name: Run tests
         run: pytest -n auto
       - name: Run tests with coverage
+
+      - name: Snyk security scan
+        uses: snyk/actions/python@master
+        with:
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+
+
+
         run: pytest --cov=. --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
 
