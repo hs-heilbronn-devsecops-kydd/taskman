@@ -26,7 +26,11 @@ jobs:
       - name: Run tests
         run: pytest -n auto
       - name: Run tests with coverage
-        run: pytest --cov=taskman tests/
+        run: pytest --cov=. --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Snyk security scan
         uses: snyk/actions/python-3.9@master
         env:
