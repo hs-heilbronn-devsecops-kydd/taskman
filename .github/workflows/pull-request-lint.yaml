@@ -27,5 +27,9 @@ jobs:
         run: pytest -n auto
       - name: Run tests with coverage
         run: pytest --cov=taskman tests/
-
-
+#      - name: Authenticate Snyk with Github
+#        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+      - name: Snyk security scan
+        uses: snyk/actions/python-3.9@master
+        env:
+           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
