@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from typing import Dict, List
 
+# import redis as redis
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 app = FastAPI()
+
+# r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 
 class TaskRequest(BaseModel):
