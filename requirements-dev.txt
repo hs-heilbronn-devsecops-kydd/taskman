@@ -6,4 +6,4 @@ pytest
 pydantic
 pytest-cov
 pytest-xdist
-
+redis
