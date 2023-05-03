@@ -27,5 +27,9 @@ jobs:
         run: pytest -n auto
       - name: Run tests with coverage
         run: pytest --cov=taskman tests/
+      - name: Snyk security scan
+        uses: snyk/actions/python@master
+        with:
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
 
 
