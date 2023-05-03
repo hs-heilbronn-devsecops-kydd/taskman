@@ -33,3 +33,5 @@ jobs:
         uses: snyk/actions/python@master
         with:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
+
+# Authenticate Snyk with Github done using the Snyk CLI
