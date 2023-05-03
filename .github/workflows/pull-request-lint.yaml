@@ -2,11 +2,9 @@ name: Check with linter on PR open and close
 
 on:
   pull_request:
-    types: [opened, closed]
+    types: [opened]
 
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
   build:
     runs-on: ubuntu-latest
     steps:
@@ -27,11 +25,8 @@ jobs:
         run: pylint taskman
       - name: Run tests
         run: pytest -n auto
-      - name: Snyk security scan
-        uses: snyk/actions/python@master
-        with:
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-
+      - name: Run tests with coverage
+        run: pytest --cov=taskman tests/
 
 
 
