@@ -1,4 +1,4 @@
-name: Check with linter on PR open and close
+name: Check with linter on PR
 
 on:
   pull_request:
@@ -27,11 +27,5 @@ jobs:
         run: pytest -n auto
       - name: Run tests with coverage
         run: pytest --cov=taskman tests/
-
-
-
-
-
-
 
 
