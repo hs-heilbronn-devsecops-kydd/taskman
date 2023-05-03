@@ -30,8 +30,6 @@ jobs:
 #      - name: Authenticate Snyk with Github
 #        run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Snyk security scan
-        uses: snyk/actions/python@master
-        with:
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-
-# Authenticate Snyk with Github done using the Snyk CLI
+        uses: snyk/actions/python-3.9@master
+        env:
+           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
