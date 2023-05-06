@@ -3,5 +3,7 @@ attrs
 projen==0.65.37
 pylint
 pytest
-fastapi
 pydantic
+pytest-cov
+pytest-xdist
+redis

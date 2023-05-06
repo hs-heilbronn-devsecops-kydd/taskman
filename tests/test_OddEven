@@ -1,0 +1,12 @@
+def test_OddEven():
+    assert OddEvenCheck(24) == 1
+    assert OddEvenCheck(1) == 0
+    assert OddEvenCheck(8) == 1 
+    assert OddEvenCheck(15) == 0
+
+def OddEvenCheck(num):
+    if num % 2 == 0:
+        return 1
+    else:
+        return 0
+  
