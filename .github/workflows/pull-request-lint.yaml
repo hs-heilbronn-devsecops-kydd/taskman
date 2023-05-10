@@ -34,4 +34,5 @@ jobs:
       - name: Snyk security scan
         uses: snyk/actions/python-3.9@master
         env:
-           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}   
+
