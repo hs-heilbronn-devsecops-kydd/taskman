@@ -8,16 +8,12 @@ project = PythonProject(
     version="0.1.0",
     deps=[
         'fastapi',
-        'redis',
         'uvicorn[standard]'
     ],
     dev_deps=[
         'attrs',
         'pylint',
         'pytest',
-        'pytest-cov',
-        'pytest-xdist',
-        'fakeredis[json]'
     ],
     github=False,
 )

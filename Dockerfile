@@ -1,6 +1,4 @@
-
-FROM python:3.9
-
+FROM python:3.9-slim
 
 RUN adduser taskman
 USER taskman
@@ -16,6 +14,4 @@ RUN pip3 install -r requirements.txt
 
 COPY ./taskman /code/taskman
 
-
 CMD ["uvicorn", "taskman.main:app", "--host", "0.0.0.0", "--port", "80"]
-
