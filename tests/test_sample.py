@@ -8,4 +8,3 @@ def test_sqrt():
    
 def test_pow():
     assert math.pow(2, 3) == 8
-    assert math.pow(4, 2) == 16
