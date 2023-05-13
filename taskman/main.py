@@ -4,12 +4,9 @@ from typing import List
 from os import getenv
 from typing_extensions import Annotated
 
-<<<<<<< HEAD
-# import redis as redis
-from fastapi import FastAPI
-=======
+
 from fastapi import Depends, FastAPI
->>>>>>> origin/main
+
 from pydantic import BaseModel
 from starlette.responses import RedirectResponse
 from redis import Redis

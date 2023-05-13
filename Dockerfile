@@ -1,3 +1,4 @@
+
 FROM python:3.9
 
 
@@ -6,6 +7,7 @@ USER taskman
 
 RUN pip install --upgrade pip
 ENV PATH="/home/taskman/.local/bin:${PATH}"
+
 
 WORKDIR /code
 
@@ -16,3 +18,4 @@ COPY ./taskman /code/taskman
 
 
 CMD ["uvicorn", "taskman.main:app", "--host", "0.0.0.0", "--port", "80"]
+
