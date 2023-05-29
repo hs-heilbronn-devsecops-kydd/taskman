@@ -5,6 +5,10 @@ on: push
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  WORKLOAD_IDENTITY_PROVIDER: projects/70756149774/locations/global/workloadIdentityPools/my-pool/providers/my-provider
+  SERVICE_ACCOUNT: hshn-devsecops-service-account@hs-heilbronn-devsecops.iam.gserviceaccount.com
+  ORGANIZATION: hs-heilbronn-devsecops-kydd
+  LOCATION: europe-west3
 
 jobs:
   build-and-push-image:
@@ -12,6 +16,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      token-id: write
 
     steps:
       - name: Checkout repository
@@ -40,3 +45,29 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Authenticate to Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+            workload_identity_provider: WORKLOAD_IDENTITY_PROVIDER
+            service_account: SERVICE_ACCOUNT
+
+      - name: Deploy
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v1'
+        with:
+          service: 'taskman-${{ env.ORGANIZATION }}'
+          image: 'gcr.io/${{ env.IMAGE_NAME }}'
+          backend: 'memory'
+
+      - name: Create GCS bucket
+        run: |
+            gcloud auth activate-service-account --key-file=${{ env.SERVICE_ACCOUNT }}
+            gsutil mb gs://kydd-bucket
+
+      - name: Update Cloud Run service with GCS backend
+        run: |
+            gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
+
+  
