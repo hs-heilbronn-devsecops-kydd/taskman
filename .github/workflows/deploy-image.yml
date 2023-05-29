@@ -22,6 +22,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+
+      - name: Authenticate to Google Cloud
+        id: 'auth'
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT}}
+
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -46,12 +54,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Authenticate to Google Cloud
-        id: 'auth'
-        uses: google-github-actions/auth@v1
-        with:
-            workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-            service_account: ${{ env.SERVICE_ACCOUNT}}
+
 
       - name: Deploy
         id: 'deploy'
