@@ -68,16 +68,8 @@ jobs:
 
       - name: Tag and push image to Google Container Registry
         run: |
-          docker tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}" "${GCR_REGISTRY}/${GCR_IMAGE_NAME}:${GITHUB_IMAGE_TAG}"
-          docker push "${GCR_REGISTRY}/${GCR_IMAGE_NAME}:${GITHUB_IMAGE_TAG}"     
-
-      - name: Pull image from GitHub Container Registry and push to Google Container Registry
-        run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
-          docker push ${{ env.GCR_IMAGE_NAME }} 
-          
-          
+          docker tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}" "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"
+          docker push "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"     
 
 #      - name: Pull image from GitHub Container Registry and push to Google Container Registry
 #        run: |
