@@ -56,11 +56,18 @@ jobs:
             workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
             service_account: ${{ env.SERVICE_ACCOUNT}}
             
+      - name: Get Docker image tag
+        id: get_tag
+        run: |
+            IMAGE_TAG=$(docker inspect --format='{{range .RepoTags}}{{.}} {{end}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
+            echo "::set-output name=tag::${IMAGE_TAG##*:}"
+            
       - name: Pull image from GitHub Container Registry and push to Google Container Registry
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
-          docker push ${{ env.GCR_IMAGE_NAME }}     
+            IMAGE_TAG=${{ steps.get_tag.outputs.tag }}
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}
+            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} ${{ env.GCR_IMAGE_NAME }}:${IMAGE_TAG}
+            docker push ${{ env.GCR_IMAGE_NAME }}:${IMAGE_TAG}    
            
       - name: Deploy
         id: 'deploy'
