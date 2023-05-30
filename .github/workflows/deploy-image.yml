@@ -70,6 +70,7 @@ jobs:
           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
           docker push ${{ env.GCR_IMAGE_NAME }} 
           
+          
 
 #      - name: Pull image from GitHub Container Registry and push to Google Container Registry
 #        run: |
