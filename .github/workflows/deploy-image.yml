@@ -10,6 +10,7 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
+  GCR_IMAGE_NAME: gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}
 
 jobs:
   build-and-push-image:
@@ -53,6 +54,12 @@ jobs:
         with:
             workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
             service_account: ${{ env.SERVICE_ACCOUNT}}
+             
+      - name: Pull image from GitHub Container Registry and push to Google Container Registry
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
+          docker push ${{ env.GCR_IMAGE_NAME }}       
 
       - name: Deploy
         id: 'deploy'
