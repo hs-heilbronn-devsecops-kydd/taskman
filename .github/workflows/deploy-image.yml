@@ -10,7 +10,7 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
-  GCR_IMAGE_NAME: gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}
+  GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
 
 jobs:
   build-and-push-image:
