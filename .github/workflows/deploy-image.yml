@@ -59,7 +59,7 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
           service: 'taskman-${{ env.ORGANIZATION }}'
-          image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}'
+          image: 'ghcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}'
           backend: 'memory'
 
       - name: Create GCS bucket
