@@ -10,7 +10,9 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
-#  GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
+  GITHUB_IMAGE_TAG: sha-85e2173
+  GCR_REGISTRY: gcr.io
+  GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
 
 jobs:
   build-and-push-image:
@@ -48,6 +50,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Pull image from GitHub Container Registry
+        run: docker pull "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}"
        
       - name: Authenticate to Google Cloud
         id: 'auth'
@@ -55,14 +60,16 @@ jobs:
         with:
             workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
             service_account: ${{ env.SERVICE_ACCOUNT}}
-      - name: Set GCR_IMAGE_NAME
-        run: |
-          echo "GCR_IMAGE_NAME=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}" >> $GITHUB_ENV
+
 
       - name: List Docker images
         run: |
           docker images
-          
+
+      - name: Tag and push image to Google Container Registry
+        run: |
+          docker tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}" "${GCR_REGISTRY}/${GCR_IMAGE_NAME}:${GITHUB_IMAGE_TAG}"
+          docker push "${GCR_REGISTRY}/${GCR_IMAGE_NAME}:${GITHUB_IMAGE_TAG}"     
 
       - name: Pull image from GitHub Container Registry and push to Google Container Registry
         run: |
