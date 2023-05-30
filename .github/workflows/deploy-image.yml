@@ -63,13 +63,12 @@ jobs:
         run: |
           docker images
           
-    
 
       - name: Pull image from GitHub Container Registry and push to Google Container Registry
         run: |
-          docker pull ghcr.io/hs-heilbronn-devsecops-kydd/taskman
-          docker tag ghcr.io/hs-heilbronn-devsecops-kydd/taskman ${{ env.GCR_IMAGE_NAME }}
-          docker push ${{ env.GCR_IMAGE_NAME }}
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
+          docker push ${{ env.GCR_IMAGE_NAME }} 
           
 
 #      - name: Pull image from GitHub Container Registry and push to Google Container Registry
