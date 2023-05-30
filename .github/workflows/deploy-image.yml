@@ -66,10 +66,10 @@ jobs:
         run: |
           docker images
 
-      - name: Tag and push image to Google Container Registry
-        run: |
-          docker tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}" "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"
-          docker push "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"     
+#      - name: Tag and push image to Google Container Registry
+#        run: |
+#          docker tag "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}" "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"
+#          docker push "${GCR_REGISTRY}/${PROJECT_ID}:${GITHUB_IMAGE_TAG}"
 
 #      - name: Pull image from GitHub Container Registry and push to Google Container Registry
 #        run: |
@@ -82,7 +82,7 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
           service: 'taskman-${{ env.ORGANIZATION }}'
-          image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}'
+          image: '${{ env.GCR_IMAGE_NAME }}'
           backend: 'memory'
 
       - name: Create GCS bucket
