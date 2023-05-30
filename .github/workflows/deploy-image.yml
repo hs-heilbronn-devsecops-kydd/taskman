@@ -17,7 +17,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      token_id: write
+      id-token: write
 
     steps:
       - name: Checkout repository
