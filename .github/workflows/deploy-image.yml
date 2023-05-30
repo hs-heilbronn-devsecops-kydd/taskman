@@ -10,6 +10,7 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
+  GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
 
 jobs:
   build-and-push-image:
@@ -17,18 +18,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-
-      - name: Authenticate to Google Cloud
-        id: 'auth'
-        uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ env.SERVICE_ACCOUNT}}
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -36,6 +30,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+               
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -53,15 +48,26 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
-
-
+       
+      - name: Authenticate to Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+            workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+            service_account: ${{ env.SERVICE_ACCOUNT}}
+            
+      - name: Pull image from GitHub Container Registry and push to Google Container Registry
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} ${{ env.GCR_IMAGE_NAME }}
+          docker push ${{ env.GCR_IMAGE_NAME }}     
+           
       - name: Deploy
         id: 'deploy'
-        uses: google-github-actions/deploy-cloudrun@v1
+        uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
-          service: taskman-${{ env.ORGANIZATION }}
-          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}
+          service: 'taskman-${{ env.ORGANIZATION }}'
+          image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}'
           backend: 'memory'
 
       - name: Create GCS bucket
@@ -72,7 +78,6 @@ jobs:
       - name: Update Cloud Run service with GCS backend
         run: |
           gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
-
 
 
 
