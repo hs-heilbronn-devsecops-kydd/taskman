@@ -87,8 +87,10 @@ jobs:
         with:
             workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
             service_account:  ${{ env.SERVICE_ACCOUNT}}
-
-      - id: 'deploy'
+         
+           
+      - name: Deploy
+        id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
            service: 'taskman-${{ env.ORGANIZATION }}'
