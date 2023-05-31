@@ -10,6 +10,8 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
+  GITHUB_IMAGE_TAG: sha-85e2173
+  GCR_REGISTRY: gcr.io
   GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
 
 jobs:
@@ -48,43 +50,63 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+#      - name: Pull image from GitHub Container Registry
+#        run: docker pull "${REGISTRY}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}"
        
-      - name: Authenticate to Google Cloud
-        id: 'auth'
-        uses: 'google-github-actions/auth@v1'
+#      - name: Authenticate to Google Cloud
+#        id: 'auth'
+#        uses: 'google-github-actions/auth@v1'
+#        with:
+#            workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+#            service_account: ${{ env.SERVICE_ACCOUNT}}
+
+
+#      - name: List Docker images
+#        run: |
+#          docker images
+#
+#      - name: Tag the Docker image
+#        run: |
+#            docker tag ghcr.io/${{ env.IMAGE_NAME }}:${{ env.GITHUB_IMAGE_TAG }} ${GCR_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}
+#
+#      - name: Push the Docker image
+#        run: |
+#            docker push ${GCR_REGISTRY}/${PROJECT_ID}/${IMAGE_NAME}:${GITHUB_IMAGE_TAG}
+
+
+#      - name: Deploy
+#        id: 'deploy'
+#        uses: 'google-github-actions/deploy-cloudrun@v1'
+#        with:
+#          service: 'taskman-${{ env.ORGANIZATION }}'
+#          image: 'gcr.io/hs-heilbronn-devsecops/taskman:${{ env.GITHUB_IMAGE_TAG }}'
+#          backend: 'memory'
+
+      - uses: 'google-github-actions/auth@v1'
         with:
             workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-            service_account: ${{ env.SERVICE_ACCOUNT}}
-            
-      - name: Get Docker image tag
-        id: get_tag
-        run: |
-            IMAGE_TAG=$(docker inspect --format='{{range .RepoTags}}{{.}} {{end}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
-            echo "::set-output name=tag::${IMAGE_TAG##*:}"
-            
-      - name: Pull image from GitHub Container Registry and push to Google Container Registry
-        run: |
-            IMAGE_TAG=${{ steps.get_tag.outputs.tag }}
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}
-            docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} ${{ env.GCR_IMAGE_NAME }}:${IMAGE_TAG}
-            docker push ${{ env.GCR_IMAGE_NAME }}:${IMAGE_TAG}    
+            service_account:  ${{ env.SERVICE_ACCOUNT}}
+         
            
       - name: Deploy
         id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
-          service: 'taskman-${{ env.ORGANIZATION }}'
-          image: 'gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}'
-          backend: 'memory'
+           service: 'taskman-${{ env.ORGANIZATION }}'
+           source: '.'
 
-      - name: Create GCS bucket
-        run: |
-          gcloud auth activate-service-account --key-file=${{ env.SERVICE_ACCOUNT }}
-          gsutil mb gs://kydd-bucket
+      - name: 'Use output'
+        run: 'curl "${{ steps.deploy.outputs.url }}"'
 
-      - name: Update Cloud Run service with GCS backend
-        run: |
-          gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
+#      - name: Create GCS bucket
+#        run: |
+#          gcloud auth activate-service-account --key-file=${{ env.SERVICE_ACCOUNT }}
+#          gsutil mb gs://kydd-bucket
+#
+#      - name: Update Cloud Run service with GCS backend
+#        run: |
+#          gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
 
 
 
