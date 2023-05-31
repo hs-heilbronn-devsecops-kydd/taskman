@@ -9,6 +9,7 @@ project = PythonProject(
     deps=[
         'fastapi',
         'redis',
+        'google-cloud-storage',
         'uvicorn[standard]'
     ],
     dev_deps=[

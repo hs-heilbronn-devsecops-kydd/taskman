@@ -33,6 +33,11 @@
       "name": "fastapi",
       "type": "runtime"
     },
+
+    {
+      "name": "google-cloud-storage",
+      "type": "runtime"
+    },
     {
       "name": "redis",
       "type": "runtime"
