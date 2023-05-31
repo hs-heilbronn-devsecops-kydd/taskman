@@ -95,6 +95,7 @@ jobs:
         with:
            service: 'taskman-${{ env.ORGANIZATION }}'
            source: '.'
+           location: 'europe-west3'
 
       - name: 'Use output'
         run: 'curl "${{ steps.deploy.outputs.url }}"'
