@@ -65,7 +65,7 @@ jobs:
            service: 'taskman-${{ env.ORGANIZATION }}'
            source: '.'
            region: 'europe-west3'
-           set_env: 'BACKEND=memory'
+           BACKEND: 'memory'
     
 
       - name: 'Use output'
