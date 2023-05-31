@@ -85,8 +85,8 @@ jobs:
 
       - uses: 'google-github-actions/auth@v1'
         with:
-            workload_identity_provider: 'projects/70756149774/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-            service_account: 'hshn-devsecops-service-account@hs-heilbronn-devsecops.iam.gserviceaccount.com'
+            workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+            service_account:  ${{ env.SERVICE_ACCOUNT}}
 
       - id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v1'
@@ -94,14 +94,17 @@ jobs:
            service: 'taskman-${{ env.ORGANIZATION }}'
            source: '.'
 
-      - name: Create GCS bucket
-        run: |
-          gcloud auth activate-service-account --key-file=${{ env.SERVICE_ACCOUNT }}
-          gsutil mb gs://kydd-bucket
+      - name: 'Use output'
+        run: 'curl "${{ steps.deploy.outputs.url }}"'
 
-      - name: Update Cloud Run service with GCS backend
-        run: |
-          gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
+#      - name: Create GCS bucket
+#        run: |
+#          gcloud auth activate-service-account --key-file=${{ env.SERVICE_ACCOUNT }}
+#          gsutil mb gs://kydd-bucket
+#
+#      - name: Update Cloud Run service with GCS backend
+#        run: |
+#          gcloud run services update 'taskman-${{ env.ORGANIZATION }}' --region=${{ env.LOCATION }} --update-env-vars=BACKEND=gcs
 
 
 
