@@ -65,8 +65,8 @@ jobs:
            service: 'taskman-${{ env.ORGANIZATION }}'
            source: '.'
            region: 'europe-west3'
-        env:
-           BACKEND: 'memory'    
+           set_env: 'BACKEND=memory'
+    
 
       - name: 'Use output'
         run: 'curl "${{ steps.deploy.outputs.url }}"'
