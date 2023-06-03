@@ -10,9 +10,7 @@ env:
   ORGANIZATION: hs-heilbronn-devsecops-kydd
   PROJECT_ID: hs-heilbronn-devsecops
   LOCATION: europe-west3
-  GITHUB_IMAGE_TAG: sha-85e2173
-  GCR_REGISTRY: gcr.io
-  GCR_IMAGE_NAME: gcr.io/hs-heilbronn-devsecops/taskman
+ 
 
 jobs:
   build-and-push-image:
