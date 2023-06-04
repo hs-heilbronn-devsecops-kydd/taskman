@@ -8,8 +8,7 @@ env:
   WORKLOAD_IDENTITY_PROVIDER: projects/70756149774/locations/global/workloadIdentityPools/my-pool/providers/my-provider
   SERVICE_ACCOUNT: hshn-devsecops-service-account@hs-heilbronn-devsecops.iam.gserviceaccount.com
   ORGANIZATION: hs-heilbronn-devsecops-kydd
-  PROJECT_ID: hs-heilbronn-devsecops
-  LOCATION: europe-west3
+
  
 
 jobs:
