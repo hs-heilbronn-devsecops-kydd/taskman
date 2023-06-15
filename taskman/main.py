@@ -4,12 +4,16 @@ from typing import List
 from os import getenv
 from typing_extensions import Annotated
 
+
 from fastapi import Depends, FastAPI
+
 from pydantic import BaseModel
 from starlette.responses import RedirectResponse
 from redis import Redis
 
 app = FastAPI()
+
+# r = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 
 def redis_client():
