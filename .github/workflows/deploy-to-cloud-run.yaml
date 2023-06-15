@@ -2,6 +2,11 @@ name: Deploy to Cloud Run
 
 on: [push]
 
+env:
+  WORKLOAD_IDENTITY_PROVIDER: projects/70756149774/locations/global/workloadIdentityPools/my-pool/providers/my-provider
+  SERVICE_ACCOUNT: hshn-devsecops-service-account@hs-heilbronn-devsecops.iam.gserviceaccount.com
+  ORGANIZATION: hs-heilbronn-devsecops-kydd
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,14 +20,20 @@ jobs:
 
     - uses: 'google-github-actions/auth@v1'
       with:
-        workload_identity_provider: 'projects/70756149774/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-        service_account: 'hshn-devsecops-service-account@hs-heilbronn-devsecops.iam.gserviceaccount.com'
-
-    - id: 'deploy'
+            workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+            service_account:  ${{ env.SERVICE_ACCOUNT}}
+         
+           
+    - name: Deploy
+      id: 'deploy'
       uses: 'google-github-actions/deploy-cloudrun@v1'
       with:
-        service: 'hello-cloud-run'
-        source: '.'
+           service: 'taskman-${{ env.ORGANIZATION }}'
+           source: '.'
+           region: 'europe-west3'
+           env_vars:
+               BACKEND = memory
+    
 
     - name: 'Use output'
       run: 'curl "${{ steps.deploy.outputs.url }}"'
