@@ -11,7 +11,10 @@ project = PythonProject(
         'google-cloud-storage',
         'redis',
         'google-cloud-storage',
-        'uvicorn[standard]'
+        'uvicorn[standard]',
+        'opentelemetry-api',
+        'opentelemetry-sdk',
+        'opentelemetry-instrumentation-fastapi'
     ],
     dev_deps=[
         'attrs',
