@@ -4,11 +4,6 @@ from typing import List, Optional
 from os import getenv
 from typing_extensions import Annotated
 
-from fastapi import Depends, FastAPI
-from starlette.responses import RedirectResponse
-from .backends import Backend, RedisBackend, MemoryBackend, GCSBackend
-from .model import Task, TaskRequest
-
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
@@ -17,6 +12,11 @@ from opentelemetry.sdk.trace.export import (
 )
 
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from fastapi import Depends, FastAPI
+from starlette.responses import RedirectResponse
+from .backends import Backend, RedisBackend, MemoryBackend, GCSBackend
+from .model import Task, TaskRequest
 
 app = FastAPI()
 
