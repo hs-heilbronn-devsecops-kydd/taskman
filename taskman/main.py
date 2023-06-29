@@ -10,7 +10,10 @@ from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
-
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.semconv.trace import SpanAttributes
+from opentelemetry.trace import get_current_span
+from opentelemetry.trace.status import StatusCode
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from fastapi import Depends, FastAPI
@@ -50,10 +53,15 @@ def get_tasks(backend: Annotated[Backend, Depends(get_backend)]) -> List[Task]:
         tasks.append(backend.get(key))
     return tasks
 
-
-@app.get('/tasks/{task_id}')
+@app.get('/tasks/{item_id}')
 def get_task(task_id: str,
              backend: Annotated[Backend, Depends(get_backend)]) -> Task:
+
+    current_span = trace.get_current_span()
+    if current_span:
+        current_span.set_attribute('task.id', task_id)
+        current_span.set_attribute('task.name', "Span - KYDD")
+        current_span.set_attribute(SpanAttributes.HTTP_METHOD, "GET")
     return backend.get(task_id)
 
 
