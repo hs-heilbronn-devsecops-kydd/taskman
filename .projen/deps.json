@@ -42,6 +42,10 @@
       "type": "runtime"
     },
     {
+      "name": "opentelemetry-exporter-gcp-trace",
+      "type": "runtime"
+    },
+    {
       "name": "opentelemetry-instrumentation-fastapi",
       "type": "runtime"
     },
@@ -51,6 +55,10 @@
     },
     {
       "name": "redis",
+      "type": "runtime"
+    },
+    {
+      "name": "setuptools>=65.5.1",
       "type": "runtime"
     },
     {
