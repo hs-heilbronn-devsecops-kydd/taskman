@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
+import os
+
 from uuid import uuid4
 from typing import List, Optional
 from os import getenv
-
 from typing_extensions import Annotated
 
 from fastapi import Depends, FastAPI
 from starlette.responses import RedirectResponse
-from .backends import Backend, RedisBackend, MemoryBackend, GCSBackend
-from .model import Task, TaskRequest
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 from opentelemetry import trace
+from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from .backends import Backend, RedisBackend, MemoryBackend, GCSBackend
+from .model import Task, TaskRequest
 
 app = FastAPI()
 
@@ -39,14 +43,18 @@ def get_backend() -> Backend:
 def redirect_to_tasks() -> None:
     return RedirectResponse(url='/tasks')
 
-
 @app.get('/tasks')
 def get_tasks(backend: Annotated[Backend, Depends(get_backend)]) -> List[Task]:
     keys = backend.keys()
-
     tasks = []
-    for key in keys:
-        tasks.append(backend.get(key))
+
+    # Custom span for collecting the tasks
+    with tracer.start_as_current_span("get_tasks") as current_span:
+        for key in keys:
+            tasks.append(backend.get(key))
+
+        current_span.set_attribute("get_total_tasks", int(len(tasks)))
+
     return tasks
 
 
@@ -70,12 +78,20 @@ def create_task(request: TaskRequest,
     backend.set(task_id, request)
     return task_id
 
-provider = TracerProvider()
+
+tracer_provider = TracerProvider()
+
+# Sends spans to the console
 processor = BatchSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(processor)
+tracer_provider.add_span_processor(processor)
+
+if 'GITHUB_ACTIONS' not in os.environ:
+    # Sends spans to Google Cloud
+    cloud_processor = BatchSpanProcessor(CloudTraceSpanExporter())
+    tracer_provider.add_span_processor(cloud_processor)
 
 # Sets the global default tracer provider
-trace.set_tracer_provider(provider)
+trace.set_tracer_provider(tracer_provider)
 
 # Creates a tracer from the global tracer provider
 tracer = trace.get_tracer("my.tracer.name")
