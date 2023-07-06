@@ -57,16 +57,6 @@ def get_tasks(backend: Annotated[Backend, Depends(get_backend)]) -> List[Task]:
 
     return tasks
 
-# @app.get('/tasks')
-# def get_tasks(backend: Annotated[Backend, Depends(get_backend)]) -> List[Task]:
-#     with tracer.start_as_current_span("get_tasks") as span:
-#         keys = backend.keys()
-#         span.set_attribute("service.name","kydd")
-#         tasks = []
-#         for key in keys:
-#             tasks.append(backend.get(key))
-#         return tasks
-
 
 @app.get('/tasks/{task_id}')
 def get_task(task_id: str,
