@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-
 from uuid import uuid4
 from typing import List, Optional
 from os import getenv
